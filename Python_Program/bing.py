@@ -49,6 +49,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         inicio = "/th?"
         final = ".jpg"
+
+
+            
         
         try:
             for l in html.readlines():
@@ -56,17 +59,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     p = l.find(inicio)
                     f = l.find(final)
                     imagen = l[p:f+4]
-            archivo = imagen[11:len(imagen)]
-            archivo = "." + archivo
-            lugar = open(".prev.txt", 'r')
-            localizacion = lugar.read()
-            urllib.request.urlretrieve("https://bing.com{}".format(imagen),"{}{}".format(localizacion,archivo))
-            print(archivo)
-            pixmap = QPixmap('{}{}'.format(localizacion,archivo))
+            archivo = tempfile.NamedTemporaryFile(delete=True)
+            print(archivo.name)
+
+            urllib.request.urlretrieve("https://bing.com{}".format(imagen), archivo.name)
+            pixmap = QPixmap(archivo.name)
             self.Imagen.setPixmap(pixmap)
-            remove(archivo)
-        except:
-            QMessageBox.critical(self, "Error","An error occurred.")
+
+        except Exception as e:
+            QMessageBox.critical(self, "Error","An error ocurred.")       
+
+        
 
     def buscarRuta(self):
         try:
