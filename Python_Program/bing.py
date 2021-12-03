@@ -12,7 +12,7 @@ from PyQt5.QtCore import Qt, QDir
 from PyQt5.QtGui import QPalette, QIcon, QPixmap
 from PyQt5.QtWidgets import QWidget, QApplication, QInputDialog, QVBoxLayout, QPushButton, QFileDialog, QColorDialog, QFontDialog, QMessageBox
 import sys
-
+from PIL import Image
 
 
 
@@ -59,10 +59,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     p = l.find(inicio)
                     f = l.find(final)
                     imagen = l[p:f+4]
-            archivo = tempfile.NamedTemporaryFile(delete=True)
-            print(archivo.name)
-
+            archivo = tempfile.NamedTemporaryFile(delete=True, prefix = ".jpg")
             urllib.request.urlretrieve("https://bing.com{}".format(imagen), archivo.name)
+            img = Image.open(archivo.name)
+            new_img = img.resize((256,256))
+            new_img.save(archivo.name,'png')
             pixmap = QPixmap(archivo.name)
             self.Imagen.setPixmap(pixmap)
 
